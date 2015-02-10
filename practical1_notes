@@ -1,0 +1,28 @@
+neural network
+- adaptive basis function regression
+- for linear, we had a phi that we multiplied with w, then find gradient 
+- instead of just one phi, 
+scikitlearn
+pandas
+numpy
+
+cross validation - divide up training data and set lambda
+
+higher alpha - regularization parameter - more of your weights are gonna be zero
+lambda is the same thing as alpha
+
+
+>>> import sklearn
+>>> from sklearn import linear_model
+>>> linear_model.Ridge
+<class 'sklearn.linear_model.ridge.Ridge'>
+>>> x = linear_model.Ridge(alpha = 0.5)
+>>> x.train(data, predictiosn_
+... 
+... 
+... 
+... )
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'Ridge' object has no attribute 'train'
+>>> x.predict
