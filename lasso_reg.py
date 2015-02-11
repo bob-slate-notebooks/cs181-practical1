@@ -4,7 +4,8 @@ import numpy as np
 from sklearn import linear_model 
 
 train_filename = 'train.csv.gz'
-test_filename  = 'test.csv.gz'
+test_filename = 'train.csv.gz'
+#test_filename  = 'test.csv.gz'
 pred_filename  = 'example_mean.csv'
 
 # Load the training file.
@@ -30,9 +31,16 @@ with gzip.open(train_filename, 'r') as train_fh:
 # Compute the mean of the gaps in the training data.
 gaps = np.array([datum['gap'] for datum in train_data])
 mean_gap = np.mean(gaps)
+features = np.array([datum['features'] for datum in train_data])
+
+cutoff = 100000
+gaps_train = np.vsplit(gaps, cutoff)[0]
+features_train = np.vsplit(features, 2)[0]
+gaps_test = np.vsplit(gaps, cutoff)[1]
+features_test = np.vsplit(features, 2)[1]
 
 
-# Load the test file.
+'''# Load the test file.
 test_data = []
 with gzip.open(test_filename, 'r') as test_fh:
 
@@ -51,11 +59,12 @@ with gzip.open(test_filename, 'r') as test_fh:
         test_data.append({ 'id':       id,
                            'smiles':   smiles,
                            'features': features })
+'''
 
 # cut it off early to do the features 
 clf = linear_model.Ridge(alpha = 0.5)
-clf.fit(features, gaps) # feature vectors (row is one data point), label/gap/thing
-result_gaps = clf.predict() # call on feature vectors # paramter is second half of the data
+clf.fit(features_train, gaps_train) # feature vectors (row is ohhhone data point), label/gap/thing
+result_gaps = clf.predict(features_test) # call on feature vectors # parameter is second half of the data
 
 
 # Write a prediction file.
@@ -67,5 +76,5 @@ with open(pred_filename, 'w') as pred_fh:
     # Write the header row.
     pred_csv.writerow(['Id', 'Prediction'])
 
-    for datum in test_data:
+    for datum in features_test:
         pred_csv.writerow([datum['id'], result_gaps])
