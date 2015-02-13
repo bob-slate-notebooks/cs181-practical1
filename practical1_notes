@@ -11,18 +11,12 @@ cross validation - divide up training data and set lambda
 higher alpha - regularization parameter - more of your weights are gonna be zero
 lambda is the same thing as alpha
 
+rdkit
+http://rdkit.org/UGM/2012/Landrum_RDKit_UGM.Fingerprints.Final.pptx.pdf
 
->>> import sklearn
->>> from sklearn import linear_model
->>> linear_model.Ridge
-<class 'sklearn.linear_model.ridge.Ridge'>
->>> x = linear_model.Ridge(alpha = 0.5)
->>> x.train(data, predictiosn_
-... 
-... 
-... 
-... )
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-AttributeError: 'Ridge' object has no attribute 'train'
->>> x.predict
+
+GetMorganFingerprintAsBitVect( (Mol)mol, (int)radius [, (int)nBits=2048 [, (AtomPairsParameters)invariants=[] [, (AtomPairsParameters)fromAtoms=[] [, (bool)useChirality=False [, (bool)useBondTypes=True [, (bool)useFeatures=False [, (AtomPairsParameters)bitInfo=None]]]]]]]) -> ExplicitBitVect :
+
+
+plot training and test and see when overfitting
+higher alpha values means more penalty
