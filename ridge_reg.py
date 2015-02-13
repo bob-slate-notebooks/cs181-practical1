@@ -70,11 +70,11 @@ with gzip.open(test_filename, 'r') as test_fh:
 
 alpha = 0
 # cut it off early to do the features 
-for i in range(1, 10):
-    alpha = 10 ** (-10 * i)
-    clf = linear_model.Ridge(alpha)
-    clf.fit(features_train, gaps_train) # feature vectors (row is ohhhone data point), label/gap/thing
-    result_gaps = clf.predict(features_test) # call on feature vectors # parameter is second half of the data
+# for i in range(1, 10):
+#     alpha = 10 ** (-10 * i)
+clf = linear_model.Ridge(alpha = 0.5)
+clf.fit(features_train, gaps_train) # feature vectors (row is ohhhone data point), label/gap/thing
+result_gaps = clf.predict(features_test) # call on feature vectors # parameter is second half of the data
 
     # Write a prediction file.
     # with open(pred_filename, 'w') as pred_fh:
@@ -88,5 +88,5 @@ for i in range(1, 10):
     #     for datum in features_test:
     #         pred_csv.writerow([1, result_gaps])
 
-    rms = sqrt(mean_squared_error(gaps_test, result_gaps))
-    print str(alpha) +  "," + str(rms)
+rms = sqrt(mean_squared_error(gaps_test, result_gaps))
+print str(alpha) +  "," + str(rms)
