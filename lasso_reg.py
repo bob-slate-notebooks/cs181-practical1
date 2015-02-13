@@ -6,8 +6,8 @@ from sklearn.metrics import mean_squared_error
 from math import sqrt
 
 train_filename = 'train.csv.gz'
-test_filename = 'train.csv.gz'
-#test_filename  = 'test.csv.gz'
+# test_filename = 'train.csv.gz'
+test_filename  = 'test.csv.gz'
 pred_filename  = 'lasso_prediction.csv'
 
 # Load the training file.
@@ -35,19 +35,19 @@ with gzip.open(train_filename, 'r') as train_fh:
                             'gap':      gap })
         # counter = counter + 1
 
-# Compute the mean of the gaps in the training data.
-gaps = np.array([datum['gap'] for datum in train_data])
-# mean_gap = np.mean(gaps)
-features = np.array([datum['features'] for datum in train_data])
+# Get the gaps in the training data.
+gaps_train = np.array([datum['gap'] for datum in train_data])
+# Get features of the training data
+features_train = np.array([datum['features'] for datum in train_data])
 
-cutoff = 800000
-gaps_train = np.hsplit(gaps, [cutoff])[0]
-features_train = np.vsplit(features, [cutoff])[0]
-gaps_test = np.hsplit(gaps, [cutoff])[1]
-features_test = np.vsplit(features, [cutoff])[1]
+# cutoff = 800000
+# gaps_train = np.hsplit(gaps, [cutoff])[0]
+# features_train = np.vsplit(features, [cutoff])[0]
+# gaps_test = np.hsplit(gaps, [cutoff])[1]
+# features_test = np.vsplit(features, [cutoff])[1]
 
 
-'''# Load the test file.
+# Load the test file.
 test_data = []
 with gzip.open(test_filename, 'r') as test_fh:
 
@@ -66,27 +66,30 @@ with gzip.open(test_filename, 'r') as test_fh:
         test_data.append({ 'id':       id,
                            'smiles':   smiles,
                            'features': features })
-'''
 
-# cut it off early to do the features 
-for i in range(-5, 10):
-    alpha = 10 ** (-i)
-    #clf = linear_model.Lasso(alpha, max_iter=100000000)
-    clf = linear_model.ElasticNet(alpha, 0.5, max_iter = 10000000)
-    clf.fit(features_train, gaps_train) # feature vectors (row is ohhhone data point), label/gap/thing
-    result_gaps = clf.predict(features_test) # call on feature vectors # parameter is second half of the data
+# Get features of the test data
+features_test = np.array([datum['features'] for datum in test_data])
+# Get ids of the test data
+ids_test = np.array([datum['id'] for datum in test_data])
 
-    # Write a prediction file.
-    # with open(pred_filename, 'w') as pred_fh:
+# for i in range(-5, 10):
+alpha = 0.000001
+clf = linear_model.Lasso(alpha, max_iter=100000000)
+# clf = linear_model.ElasticNet(alpha, 0.5, max_iter = 10000000)
+clf.fit(features_train, gaps_train) # feature vectors (row is ohhhone data point), label/gap/thing
+result_gaps = clf.predict(features_test) # call on feature vectors # parameter is second half of the data
 
-    #     # Produce a CSV file.
-    #     pred_csv = csv.writer(pred_fh, delimiter=',', quotechar='"')
+# Write a prediction file.
+with open(pred_filename, 'w') as pred_fh:
 
-    #     # Write the header row.
-    #     pred_csv.writerow(['Id', 'Prediction'])
+    # Produce a CSV file.
+    pred_csv = csv.writer(pred_fh, delimiter=',', quotechar='"')
 
-    #     for datum in features_test:
-    #         pred_csv.writerow([1, result_gaps])
+    # Write the header row.
+    pred_csv.writerow(['Id', 'Prediction'])
 
-    rms = sqrt(mean_squared_error(gaps_test, result_gaps))
-    print str(alpha) +  "," + str(rms)
+    for i in xrange(0, len(ids_test)):
+        pred_csv.writerow([ids_test[i], result_gaps[i]])
+
+# rms = sqrt(mean_squared_error(gaps_test, result_gaps))
+# print str(alpha) +  "," + str(rms)
